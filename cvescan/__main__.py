@@ -232,7 +232,7 @@ def spin(start_text, ok, fail):
     return spin_decorator
 
 
-spin.silent = False
+spin.silent = True
 
 
 @spin(
