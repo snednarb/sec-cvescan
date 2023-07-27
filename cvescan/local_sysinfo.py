@@ -50,9 +50,11 @@ class LocalSysInfo:
 
             for entitlement in ua_status["services"]:
                 if entitlement["name"] == "esm-apps":
-                    apps = True if entitlement["status"] == "enabled" else False
+                    apps = (entitlement["available"] == "yes"
+                            and entitlement["status"] == "enabled")
                 elif entitlement["name"] == "esm-infra":
-                    infra = True if entitlement["status"] == "enabled" else False
+                    infra = (entitlement["available"] == "yes"
+                             and entitlement["status"] == "enabled")
         except (FileNotFoundError, PermissionError) as err:
             self.logger.debug("Failed to open UA Status JSON file: %s" % err)
         except (KeyError) as ke:
