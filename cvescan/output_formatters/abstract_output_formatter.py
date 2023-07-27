@@ -35,6 +35,9 @@ class AbstractOutputFormatter(ABC):
     ) -> (str, int):
         pass
 
+    def _clean_priority(self, p):
+        return p[0] if isinstance(p, list) else p;
+
     def _filter_on_experimental(self, scan_results):
         if self.opt.experimental_mode:
             return scan_results
@@ -43,7 +46,7 @@ class AbstractOutputFormatter(ABC):
 
         for sr in scan_results:
             if sr.repository in {const.UA_APPS, const.UA_INFRA}:
-                new_sr = ScanResult(sr.cve_id, sr.priority, sr.package_name, None, None)
+                new_sr = ScanResult(sr.cve_id, self._clean_priority(sr.priority), sr.package_name, None, None)
                 filtered_scan_results.append(new_sr)
             else:
                 filtered_scan_results.append(sr)
@@ -57,7 +60,7 @@ class AbstractOutputFormatter(ABC):
         priority_index = const.PRIORITIES.index(self.opt.priority)
         priority_filter = set(const.PRIORITIES[priority_index:])
 
-        return [sr for sr in scan_results if sr.priority in priority_filter]
+        return [sr for sr in scan_results if self._clean_priority(sr.priority) in priority_filter]
 
     def _filter_on_fixable(self, scan_results):
         return [sr for sr in scan_results if sr.fixed_version is not None]

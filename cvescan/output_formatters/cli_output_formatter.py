@@ -148,10 +148,13 @@ class CLIOutputFormatter(AbstractOutputFormatter):
 
         return tabulate(formatted_results, headers, tablefmt="plain")
 
+    def _clean_priority(self, p):
+        return p[0] if isinstance(p, list) else p;
+
     def _transform_results(self, scan_results, sysinfo):
         for sr in scan_results:
             fixed_version = sr.fixed_version if sr.fixed_version else "Unresolved"
-            priority = CLIOutputFormatter._colorize_priority(sr.priority)
+            priority = CLIOutputFormatter._colorize_priority(self._clean_priority(sr.priority))
             repository = self._transform_repository(sr.repository, sysinfo)
 
             result = [sr.cve_id, priority, sr.package_name, fixed_version, repository]

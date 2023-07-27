@@ -7,6 +7,9 @@ from cvescan.scan_result import ScanResult
 
 
 class CSVOutputFormatter(AbstractOutputFormatter):
+    def _clean_priority(self, p):
+        return p[0] if isinstance(p, list) else p;
+
     def format_output(
         self, scan_results: List[ScanResult], sysinfo: TargetSysInfo
     ) -> (str, int):
@@ -41,7 +44,7 @@ class CSVOutputFormatter(AbstractOutputFormatter):
 
             result = [
                 sr.cve_id,
-                sr.priority,
+                self._clean_priority(sr.priority),
                 sr.package_name,
                 fixed_version,
                 repository,
